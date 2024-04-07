@@ -24,7 +24,7 @@ class TimerThread implements Runnable {
             Thread.sleep(TimeUnit.SECONDS.toMillis(seconds));
             System.out.println(seconds + " секунд осталось...");
             Thread.sleep(TimeUnit.SECONDS.toMillis(seconds));
-            System.out.println("Время вышло!");
+            System.out.println("Время вышло! Введите любую строку для завершения.");
         }
         catch (InterruptedException ex) {
         }
@@ -55,8 +55,8 @@ public class WordsGameLocal {
     }
 
     public void Start() {
-        System.out.println("Игра началась! Напишите \"END\" для отмены или что-нибудь другое для продолжения.");
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Игра на стадии подготовки! Напишите \"END\" для отмены или что-нибудь другое для продолжения.");
+        Scanner sc = new Scanner(System.in, "Cp866");
         String command = sc.nextLine();
 
         if (command.equals("END")) {
@@ -73,11 +73,20 @@ public class WordsGameLocal {
 
     private void RequestWord(Scanner sc) {
         Thread timerThread = new Thread(new TimerThread(__seconds_to_answer));
-        System.out.println("Таймер пошёл, называйте город!");
+        System.out.println("Таймер пошёл, называйте город! Или напишите \"END\" для выхода...");
+        
+        if (__last_city == null) {
+            System.out.println("Это первый город.");
+        }
+        else {
+            System.out.println("Последний названный город: " + __last_city.substring(0, 1).toUpperCase() + __last_city.substring(1));
+        }
         
         timerThread.start();
         while (true) {
-            String word = sc.nextLine();
+            String word = sc.nextLine().toLowerCase();
+
+            if (!timerThread.isAlive() || word.equals("END")) break;
 
             if (word.isEmpty()) {
                 System.out.println("Введите строку.");
@@ -110,8 +119,9 @@ public class WordsGameLocal {
             break;
         }
 
-        if (timerThread.isAlive()) {
+        if (!timerThread.isAlive()) {
             System.out.println("Таймер истёк. Игра окончена.");
+            return;
         };
         timerThread.interrupt();
 
