@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 class TimerThread implements Runnable {
-    private int __seconds_to_answer;
+    private final int __seconds_to_answer;
 
     public TimerThread(int seconds_to_answer) {
         __seconds_to_answer = seconds_to_answer;
@@ -32,8 +32,8 @@ class TimerThread implements Runnable {
 }
 
 public class WordsGameLocal {
-    private ArrayList<String> __cities;
-    private ArrayList<String> __used_cities;
+    private final ArrayList<String> __cities;
+    private final ArrayList<String> __used_cities;
     private String __last_city;
     private final int __seconds_to_answer = 30;
 
@@ -56,7 +56,7 @@ public class WordsGameLocal {
 
     public void Start() {
         System.out.println("Игра на стадии подготовки! Напишите \"END\" для отмены или что-нибудь другое для продолжения.");
-        Scanner sc = new Scanner(System.in, "Cp866");
+        Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
 
         if (command.equals("END")) {
@@ -86,7 +86,7 @@ public class WordsGameLocal {
         while (true) {
             String word = sc.nextLine().toLowerCase();
 
-            if (!timerThread.isAlive() || word.equals("END")) break;
+            if (!timerThread.isAlive() || word.equals("end")) break;
 
             if (word.isEmpty()) {
                 System.out.println("Введите строку.");
@@ -109,9 +109,16 @@ public class WordsGameLocal {
                 break;
             }
 
-            if (word.charAt(0) != __last_city.charAt(__last_city.length() - 1)) {
-                System.out.println("Название города не начинается на букву, на которую заканчивается название последнего города: " + __last_city);
-                continue;
+            if ((__last_city.charAt(__last_city.length() - 1) == 'ь' || __last_city.charAt(__last_city.length() - 1) == 'ъ')) {
+                if (word.charAt(0) != __last_city.charAt(__last_city.length() - 2)) {
+                    System.out.println("Название города не начинается на букву, на которую заканчивается название последнего города: " + __last_city);
+                    continue;
+                }
+            } else {
+                if (word.charAt(0) != __last_city.charAt(__last_city.length() - 1)) {
+                    System.out.println("Название города не начинается на букву, на которую заканчивается название последнего города: " + __last_city);
+                    continue;
+                }
             }
 
             __last_city = word;
@@ -122,7 +129,7 @@ public class WordsGameLocal {
         if (!timerThread.isAlive()) {
             System.out.println("Таймер истёк. Игра окончена.");
             return;
-        };
+        }
         timerThread.interrupt();
 
         RequestWord(sc);
