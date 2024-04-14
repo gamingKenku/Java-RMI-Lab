@@ -71,7 +71,7 @@ public class WordsGameLocal {
         sc.close();
     }
 
-    private void RequestWord(Scanner sc) {
+    protected void RequestWord(Scanner sc) {
         Thread timerThread = new Thread(new TimerThread(__seconds_to_answer));
         System.out.println("Таймер пошёл, называйте город! Или напишите \"END\" для выхода...");
         
