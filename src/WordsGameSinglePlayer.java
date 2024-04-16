@@ -39,12 +39,37 @@ public class WordsGameSinglePlayer implements WordGameSinglePlayerInterface {
 
     @Override
     public void Start() {
-
+        if (__timer_thread.isAlive()) __timer_thread.interrupt();
+        __timer_thread.start();
     }
 
     @Override
-    public boolean SubmitWord(String word) {
-        return true;
+    public String SubmitWord(String word) {
+        String response = "";
+        switch (ValidateCity(word))
+        {
+            case PASSED:
+                break;
+            case PASSED_FIRST_WORD:
+                break;
+            case NO_INPUT:
+                response = "Введите строку.";
+                break;
+            case WORD_ALREADY_CALLED:
+                response = "Город уже был назван.";
+                break;
+            case WORD_NOT_FOUND:
+                response = "Город не существует.";
+                break;
+            case TIME_OUT:
+                response = "Время вышло.";
+                break;
+            case WRONG_FIRST_LETTER:
+                response = "Название города не начинается на букву, на которую заканчивается название последнего города: " + __last_city;
+                break;
+        }
+
+        return response;
     }
 
     private ValidationResponse ValidateCity(String word) {
