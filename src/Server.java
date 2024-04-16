@@ -17,6 +17,5 @@ public class Server {
             System.err.println("Server exception: " + ex.toString());
             ex.printStackTrace();
         }
-
     }
 }
