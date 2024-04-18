@@ -1,8 +1,8 @@
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Client {
-    private Client() {
+public class ClientMessage {
+    private ClientMessage() {
     }
 
     public static void main(String[] args) {
